@@ -34,6 +34,7 @@ vim.opt.undofile = true
 vim.opt.updatetime = 100 -- ms, completion
 vim.opt.writebackup = false -- prevents editing files edited elsewhere
 vim.opt.cursorline = true --current line highlight
+vim.opt.cursorcolumn = true
 
 -- Search Behaviour
 vim.opt.hlsearch = true --highlight all search
