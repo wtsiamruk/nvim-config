@@ -8,6 +8,7 @@ local snacks_plugin = {
     terminal = {},
     scroll   = { enabled = true },
     animate  = {},
+    notifier = { enabled = true, top_down = false, margin = { bottom = 7, right = 3 } },
   },
   keys = {
     -- Option+F7 in kitty sends <F55> (kitty keyboard protocol encoding)
@@ -15,5 +16,4 @@ local snacks_plugin = {
     { "<A-`>",  function() Snacks.terminal() end,     desc = "Toggle terminal" },
   },
 }
-
 return snacks_plugin

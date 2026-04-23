@@ -157,7 +157,35 @@ local function detect_runtimes()
           -- Mark as default if this candidate is what "current" points to.
           default = (vim.fn.resolve(path) == current_real),
         })
-      end
+end
+
+return M
+
+-- =============================================================================
+-- USAGE
+--
+-- This module only builds config tables. The caller is responsible for
+-- starting the server. Typical setup in after/ftplugin/java.lua:
+--
+--   local jdtls     = require("jdtls")
+--   local cfg       = require("config.jdtls")
+--   local root_dir  = jdtls.setup.find_root({ "pom.xml", "build.gradle", ".git" })
+--   local workspace = vim.fn.expand("~/.local/share/nvim/jdtls-workspace/")
+--                     .. vim.fn.fnamemodify(root_dir, ":t")
+--
+--   jdtls.start_or_attach(cfg.make_standard_config(root_dir, workspace, on_attach))
+--
+-- For buffers that only need syntax / diagnostics (e.g. read-only library
+-- sources), use make_syntax_config instead — it skips DAP and test bundles:
+--
+--   jdtls.start_or_attach(cfg.make_syntax_config(root_dir, workspace))
+--
+-- Eclipse formatter XML
+--   Export from IDEA via Settings → Editor → Code Style → Java → ⚙ → Export →
+--   "Eclipse Code Formatter Profile", then uncomment in make_settings():
+--     settings = { url = vim.fn.expand("~/.config/nvim/java-formatter.xml") }
+-- =============================================================================
+
     end
   end
 
