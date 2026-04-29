@@ -17,7 +17,7 @@ local mason_lsp_conf = {
         -- jdtls must be in ensure_installed so mason installs it on new machines.
         -- automatic_enable excludes it so lspconfig does NOT auto-start it —
         -- nvim-jdtls manages the jdtls lifecycle via its own FileType autocmd.
-        ensure_installed = {"lua_ls", "rust_analyzer", "ts_ls", "jdtls", "clangd", "sourcekit-lsp"},
+        ensure_installed = {"lua_ls", "rust_analyzer", "ts_ls", "jdtls", "clangd", "sourcekit-lsp", "groovyls"},
         automatic_enable = {
           exclude = { "jdtls" },
         },
@@ -130,6 +130,12 @@ local nvim_jdtls_conf = {
       map("n", "<leader>jf", function()
         require("telescope.builtin").lsp_dynamic_workspace_symbols()
       end,                                                                       "[J]ava [F]ind in Classpath")
+      map("n", "<leader>jS", function()
+        require("telescope.builtin").live_grep({
+          search_dirs = { vim.fn.stdpath("data") .. "/lazy/nvim-jdtls" },
+          prompt_title = "Search nvim-jdtls source",
+        })
+      end,                                                                       "[J]dtls plugin [S]ource grep")
       if jdtls.dap then
         map("n", "<leader>jt", jdtls.dap.test_nearest_method,                 "[J]ava [T]est Nearest Method")
         map("n", "<leader>jT", jdtls.dap.test_class,                          "[J]ava [T]est Class")

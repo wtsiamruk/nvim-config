@@ -8,7 +8,9 @@ return {
       },
       config = function()
         local builtin = require('telescope.builtin')
-        vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
+        vim.keymap.set('n', '<leader>ff', function()
+          builtin.find_files({ no_ignore = true, hidden = true })
+        end, { desc = 'Telescope find files' })
         vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
         vim.keymap.set('n', '<leader>fd', builtin.diagnostics, { desc = 'Telescope find diagnostics' })
         vim.keymap.set('n', '<leader>fr', builtin.resume, { desc = 'Telescope find resume' })
@@ -28,6 +30,14 @@ return {
           ['ui-select'] = {
             require("telescope.themes").get_dropdown {}
           }
+        },
+        defaults = {
+          vimgrep_arguments = {
+            "rg", "--color=never", "--no-heading", "--with-filename",
+            "--line-number", "--column", "--smart-case",
+            "--no-ignore",
+            "--hidden",
+          },
         },
         mappings = {
           i = {
