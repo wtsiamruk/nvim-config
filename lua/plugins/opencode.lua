@@ -1,6 +1,6 @@
 local opencode_conf = {
   "nickjvandyke/opencode.nvim",
-  version = "0.7.0", -- Latest stable release
+  version = "0.8.0", -- Latest stable release
   dependencies = {
     {
       -- `snacks.nvim` integration is recommended, but optional
