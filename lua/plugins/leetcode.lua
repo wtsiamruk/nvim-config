@@ -8,6 +8,7 @@ conf = {
     opts = {
         -- configuration goes here
         lang = 'cpp',
+        image_support = true,
         description = {
           position = "left"
         }
