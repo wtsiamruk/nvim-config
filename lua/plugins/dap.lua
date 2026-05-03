@@ -17,16 +17,16 @@ return {
       dap.listeners.before.event_exited["dapui_config"]      = function() dapui.close() end
 
       -- Keymaps
-      vim.keymap.set("n", "<leader>jdc", dap.continue,          { desc = "[J]ava [D]ebug [C]ontinue / start" })
-      vim.keymap.set("n", "<leader>jdb", dap.toggle_breakpoint, { desc = "[J]ava [D]ebug [B]reakpoint toggle" })
-      vim.keymap.set("n", "<leader>jdo", dap.step_over,         { desc = "[J]ava [D]ebug step [O]ver" })
-      vim.keymap.set("n", "<leader>jdi", dap.step_into,         { desc = "[J]ava [D]ebug step [I]nto" })
-      vim.keymap.set("n", "<leader>jdx", dap.step_out,          { desc = "[J]ava [D]ebug step out [X]" })
-      vim.keymap.set("n", "<leader>jdq", dap.terminate,         { desc = "[J]ava [D]ebug [Q]uit session" })
-      vim.keymap.set("n", "<leader>jdu", dapui.toggle,          { desc = "[J]ava [D]ebug [U]I toggle" })
-      vim.keymap.set("n", "<leader>jdB", function()
+      vim.keymap.set("n", "<leader>ds", dap.continue,          { desc = "[D]ebug Continue / [S]tart" })
+      vim.keymap.set("n", "<leader>db", dap.toggle_breakpoint, { desc = "[D]ebug [B]reakpoint toggle" })
+      vim.keymap.set("n", "<leader>do", dap.step_over,         { desc = "[D]ebug step [O]ver" })
+      vim.keymap.set("n", "<leader>di", dap.step_into,         { desc = "[D]ebug step [I]nto" })
+      vim.keymap.set("n", "<leader>dx", dap.step_out,          { desc = "[D]ebug step out [X]" })
+      vim.keymap.set("n", "<leader>dq", dap.terminate,         { desc = "[D]ebug [Q]uit session" })
+      vim.keymap.set("n", "<leader>du", dapui.toggle,          { desc = "[D]ebug [U]I toggle" })
+      vim.keymap.set("n", "<leader>dB", function()
         dap.set_breakpoint(vim.fn.input("Breakpoint condition: "))
-      end, { desc = "[J]ava [D]ebug conditional [B]reakpoint" })
+      end, { desc = "[D]ebug conditional [B]reakpoint" })
     end,
   },
 }

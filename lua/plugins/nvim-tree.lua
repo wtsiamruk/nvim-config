@@ -15,7 +15,7 @@ return {
             },
             view = {
                 preserve_window_proportions = true,
-                 side = "right",
+                 side = "left",
                  width = 50
             }
         })

@@ -10,7 +10,7 @@ if not (vim.uv or vim.loop).fs_stat(lazypath) then
     "--branch=stable", --latest stable release
     lazypath
   })
-end  
+end
 
 -- add the lazypath into vim runtime path
 vim.opt.rtp:prepend(lazypath)
