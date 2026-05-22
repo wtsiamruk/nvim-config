@@ -20,6 +20,11 @@ local snacks_plugin = {
     --     backdrop  = 60,
     --   },
     -- },
+    picker = {
+      -- your picker configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    },
     scroll   = { enabled = true },
     animate  = {},
     notifier = { enabled = true, top_down = false, margin = { bottom = 7, right = 3 } },

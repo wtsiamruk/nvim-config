@@ -7,6 +7,8 @@ return {
             { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
         },
         config = function()
+            local telescope = require("telescope")
+
             local builtin = require('telescope.builtin')
             vim.keymap.set('n', '<leader>ff', function()
                 builtin.find_files({ no_ignore = true, hidden = true })
@@ -37,6 +39,8 @@ return {
                         "--line-number", "--column", "--smart-case",
                         "--no-ignore",
                         "--hidden",
+                        "--glob", "!**/node_modules/*",
+                        "--glob", "!**/*.lock"
                     },
                 },
                 mappings = {
