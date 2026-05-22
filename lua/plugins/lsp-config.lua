@@ -19,14 +19,30 @@ local mason_lsp_conf = {
             "ts_ls",
             "clangd",
             "groovyls",
+            -- Java: jdtls is driven by the nvim-jdtls plugin spec below
+            -- (not nvim-lspconfig), with the heavy config in
+            -- lua/config/jdtls.lua. Mason still installs the launcher,
+            -- lombok agent, and Eclipse config dirs here.
+            -- "jdtls",
         }
 
-        -- no custom java home → let mason install java-language-server
-        if vim.env.JAVA_LANGUAGE_SERVER_HOME == nil then
-            table.insert(servers, "java_language_server")
-        end
+        require("mason-lspconfig").setup({
+            ensure_installed = servers,
+            -- jdtls is started by nvim-jdtls; don't let mason-lspconfig
+            -- also auto-enable it via lspconfig.
+            automatic_enable = { exclude = { "jdtls" } },
+        })
 
-        require("mason-lspconfig").setup({ ensure_installed = servers })
+        -- Auxiliary tools used by the Java stack (DAP + test runner).
+        local ok_mr, mr = pcall(require, "mason-registry")
+        if ok_mr then
+            for _, name in ipairs({ "java-debug-adapter", "java-test" }) do
+                local ok_pkg, pkg = pcall(mr.get_package, name)
+                if ok_pkg and not pkg:is_installed() then
+                    pkg:install()
+                end
+            end
+        end
     end
 }
 
@@ -82,8 +98,26 @@ local lsp_conf = {
 
 
 
+-- Java (Eclipse JDT.LS) — plugin spec stays here next to the other LSPs;
+-- all the heavy lifting (cmd, JVM flags, bundles, settings, on_attach,
+-- workspace placement, decompiler) lives in lua/config/jdtls.lua.
+local jdtls_conf = {
+    "mfussenegger/nvim-jdtls",
+    ft = { "java" },
+    dependencies = {
+        "neovim/nvim-lspconfig",
+        "hrsh7th/cmp-nvim-lsp",
+        "mfussenegger/nvim-dap",
+        "mason-org/mason.nvim",
+    },
+    config = function()
+        require("config.jdtls").setup()
+    end,
+}
+
+
 local parent = {
-    mason_conf, mason_lsp_conf,lsp_conf
+    mason_conf, mason_lsp_conf, lsp_conf, jdtls_conf
 }
 
 
