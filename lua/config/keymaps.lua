@@ -25,3 +25,13 @@ vim.keymap.set("n", "s", "<Nop>")   -- substitute (same as cl, easy to hit by ac
 vim.keymap.set("n", "S", "<Nop>")   -- substitute line (same as cc)
 vim.keymap.set("n", "Q", "<Nop>")   -- ex mode (nearly nobody uses this)
 vim.keymap.set("n", "Z", "<Nop>")   -- prefix for ZZ/ZQ — accidental :wq/:q!
+
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "json", "jsonc", "jsonl", "json5" },
+    callback = function()
+        vim.keymap.set("n", "<leader>jf", ":%!jq .<CR>", { buffer = true, desc = "JSON Format" })
+        vim.keymap.set("n", "<leader>jm", ":%!jq -c .<CR>", { buffer = true, desc = "JSON Minify" })
+    end,
+})
+
