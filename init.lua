@@ -33,9 +33,4 @@ require("config.keymaps")
 -- Lazy setup, always should be last in the config
 require("lazy").setup("plugins", opts)
 
---- color scheme setup
-require("catppuccin").setup({
-  flavour = "mocha"
-})
-vim.cmd.colorscheme "catppuccin-nvim"
 

@@ -1,33 +1,19 @@
-local term_opts = {
-  win = {
-    position  = "float",
-    relative  = "editor",
-    width     = 0.8,
-    height    = 0.8,
-    border    = "rounded",
-    title     = " opencode ",
-    title_pos = "center",
-    backdrop  = 60,
-    enter     = false,
-    on_win    = function(win)
-      require("opencode.terminal").setup(win.win)
-    end,
-  },
-}
-
-local cmd = "opencode --port"
-
-local function get_term() return require("snacks.terminal").get(cmd, term_opts) end
-
 vim.g.opencode_opts = {
   server = {
-    start  = function() get_term():show() end,
-    stop   = function() get_term():close() end,
-    toggle = function() require("snacks.terminal").toggle(cmd, term_opts) end,
+    start  = function() vim.notify("opencode is not running — start it in an external terminal", vim.log.levels.WARN, { title = "opencode" }) end,
+    stop   = function() end,
+    toggle = function() end,
   },
 }
 
 vim.o.autoread = true -- Required for `opts.events.reload`
+
+-- autoread only reloads when checktime is called; trigger it on focus/enter/idle
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold", "CursorHoldI" }, {
+  callback = function()
+    if vim.fn.mode() ~= "c" then pcall(vim.cmd, "checktime") end
+  end,
+})
 
 -- telescope picker: list sessions via GET /session, switch directly by ID
 local function session_picker()
@@ -70,12 +56,6 @@ local function session_picker()
         return
       end
       if srv then srv:select_session(sel.value.id) end
-      -- focus embedded terminal only if already open
-      local t = get_term()
-      if t and t.win and vim.api.nvim_win_is_valid(t.win) then
-        vim.api.nvim_set_current_win(t.win)
-        vim.cmd("startinsert")
-      end
     end
 
     pickers.new({}, {

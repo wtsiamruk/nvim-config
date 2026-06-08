@@ -13,18 +13,36 @@ local mason_lsp_conf = {
         "neovim/nvim-lspconfig",
     },
     config = function()
+        local servers = {
+            "lua_ls",
+            "rust_analyzer",
+            "ts_ls",
+            "clangd",
+            "groovyls",
+            -- Java: jdtls is driven by the nvim-jdtls plugin spec below
+            -- (not nvim-lspconfig), with the heavy config in
+            -- lua/config/jdtls.lua. Mason still installs the launcher,
+            -- lombok agent, and Eclipse config dirs here.
+            -- "jdtls",
+        }
+
         require("mason-lspconfig").setup({
-            -- jdtls must be in ensure_installed so mason installs it on new machines.
-            -- automatic_enable excludes it so lspconfig does NOT auto-start it —
-            -- nvim-jdtls manages the jdtls lifecycle via its own FileType autocmd.
-            ensure_installed = {
-                "lua_ls",
-                "rust_analyzer",
-                "ts_ls",
-                "clangd",
-                "groovyls"
-            },
+            ensure_installed = servers,
+            -- jdtls is started by nvim-jdtls; don't let mason-lspconfig
+            -- also auto-enable it via lspconfig.
+            automatic_enable = { exclude = { "jdtls" } },
         })
+
+        -- Auxiliary tools used by the Java stack (DAP + test runner).
+        local ok_mr, mr = pcall(require, "mason-registry")
+        if ok_mr then
+            for _, name in ipairs({ "java-debug-adapter", "java-test" }) do
+                local ok_pkg, pkg = pcall(mr.get_package, name)
+                if ok_pkg and not pkg:is_installed() then
+                    pkg:install()
+                end
+            end
+        end
     end
 }
 
@@ -46,22 +64,7 @@ local lsp_conf = {
         })
         lsp.enable('clangd')
 
-        local java_lang_s_home = vim.env.JAVA_LANGUAGE_SERVER_HOME
-        if (java_lang_s_home ~= nil) then
-            -- vim.notify('java language server detected', vim.log.levels.INFO)
-            lsp.config['java_language_server'] = {
-                cmd = {java_lang_s_home .. '/dist/lang_server_mac.sh'},
-                filetypes = {'java'},
-                root_markers = {
-                    {'.idea', '.settings', '.vscode'}, -- other IDE's indicating that it's a root
-                    {'pom.xml'}, -- only pom for now, but need to setup the gradle both through kotlin and/or gradle
-                    '.git'
-                }
-            }
-            lsp.enable('java_language_server')
-        else
-            vim.notify('java language server isn\'t setup', vim.log.levels.WARN)
-        end
+
 
 
         -- keymaps
@@ -85,7 +88,8 @@ local lsp_conf = {
         --        "os"
         --     )
         --
-
+        local builtin = require('telescope.builtin')
+        vim.keymap.set('n', 'grr', builtin.lsp_references, {desc = 'Find References'})
 
 
     end
@@ -94,8 +98,26 @@ local lsp_conf = {
 
 
 
+-- Java (Eclipse JDT.LS) — plugin spec stays here next to the other LSPs;
+-- all the heavy lifting (cmd, JVM flags, bundles, settings, on_attach,
+-- workspace placement, decompiler) lives in lua/config/jdtls.lua.
+local jdtls_conf = {
+    "mfussenegger/nvim-jdtls",
+    ft = { "java" },
+    dependencies = {
+        "neovim/nvim-lspconfig",
+        "hrsh7th/cmp-nvim-lsp",
+        "mfussenegger/nvim-dap",
+        "mason-org/mason.nvim",
+    },
+    config = function()
+        require("config.jdtls").setup()
+    end,
+}
+
+
 local parent = {
-    mason_conf, mason_lsp_conf,lsp_conf
+    mason_conf, mason_lsp_conf, lsp_conf, jdtls_conf
 }
 
 
